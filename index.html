@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kharla Piano PWA | Web Synth VST</title>
+    <meta name="description" content="Una aplicación web progresiva (PWA) de sintetizador y piano virtual con soporte MIDI y efectos DSP avanzados.">
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F9F7F2; /* Fondo beige claro elegante */
+            color: #2D2D2D;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1A1A1A;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            color: #E03C31; /* Acento rojo tipo Nord */
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Contenedor de la imagen */
+        .hero-image-container {
+            margin: 2rem auto;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background-color: #EAE6DC; /* Color de fondo mientras carga */
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #CCC;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-placeholder-text {
+            color: #888;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-block;
+            background-color: #E03C31;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(224, 60, 49, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #C43227;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(224, 60, 49, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #2D2D2D;
+            border: 2px solid #2D2D2D;
+            box-shadow: none;
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background-color: #2D2D2D;
+            color: white;
+        }
+
+        /* Sección de Características */
+        .features {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+            color: #1A1A1A;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid #E03C31;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1A1A1A;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Sección de Tecnologías */
+        .tech-stack {
+            background-color: #2D2D2D;
+            color: #F9F7F2;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .tech-stack .section-title {
+            color: #F9F7F2;
+        }
+
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sección de Donación */
+        .donation {
+            padding: 5rem 0;
+            text-align: center;
+            background-color: #F9F7F2;
+        }
+
+        .donation-card {
+            background: white;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid #EAE6DC;
+        }
+
+        .donation-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #1A1A1A;
+        }
+
+        .donation-card p {
+            font-size: 1.15rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-paypal {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #0070BA; /* Azul oficial de PayPal */
+            color: white;
+            padding: 16px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(0, 112, 186, 0.3);
+        }
+
+        .btn-paypal:hover {
+            background-color: #005ea6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 112, 186, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1A1A1A;
+            color: #888;
+            text-align: center;
+            padding: 3rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: #E03C31;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-donation {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #333;
+            font-size: 0.9rem;
+        }
+
+        .footer-donation a {
+            color: #0070BA;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 1rem;
+                display: block;
+                width: 100%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .donation-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>🎹 Kharla Piano <span>PWA-2</span></h1>
+            <p>Una aplicación web progresiva de sintetizador y piano virtual. Experiencia musical fluida directamente desde tu navegador con soporte MIDI físico y efectos DSP avanzados.</p>
+            
+            <div style="margin-bottom: 2rem;">
+                <a href="https://ciromellado.github.io/Kharla-Piano-PWA--Ciro/" class="btn" target="_blank">🎵 Probar Ahora</a>
+                <a href="https://github.com/ciromellado/Kharla-Piano-PWA--Ciro" class="btn btn-outline" target="_blank">Ver en GitHub</a>
+            </div>
+
+            <!-- 
+                📸 INSTRUCCIONES PARA TU IMAGEN:
+                1. Guarda tu imagen en la misma carpeta que este archivo (ej: "mi-piano.jpg").
+                2. Cambia "ruta-de-tu-imagen.jpg" por el nombre real de tu archivo.
+            -->
+            <div class="hero-image-container">
+                <img src="image/kharlapiano.webp" alt="Vista previa de Kharla Piano PWA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="image-placeholder-text" style="display: none;">
+                    📸<br><br>
+                    <strong>Coloca tu imagen aquí</strong><br>
+                    Reemplaza <code>src="ruta-de-tu-imagen.jpg"</code> en el código HTML<br>
+                    con la ruta real de tu imagen (ej: <code>piano-preview.jpg</code>).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Características Principales -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">✨ Características Principales</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🎛️ Motor de Audio Web</h3>
+                    <p>Generación de sonido en tiempo real con múltiples osciladores (seno, sierra, triángulo) y envolventes personalizadas mediante Web Audio API.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎹 Piano Sampler</h3>
+                    <p>Compatible con librerías externas como Splendid Grand Piano para lograr un sonido acústico realista de alta fidelidad.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎚️ Nord Synth Pad</h3>
+                    <p>Módulo de pads analógicos integrado con selector de tipos de sonido (Warm Pad, Soft Strings, Analog Sweep) y control de volumen independiente.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>✨ Efectos DSP Avanzados</h3>
+                    <p>Chorus modulado con LFO, Delay con control de tiempo y feedback, y una reverb convolucional envolvente para un sonido profesional.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎵 Reconocimiento de Acordes</h3>
+                    <p>Detecta automáticamente las notas presionadas en tiempo real y muestra el nombre del acorde en la pantalla.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔌 Conectividad MIDI</h3>
+                    <p>Soporte completo para conectar teclados y controladores MIDI físicos vía USB/Web MIDI API (tanto entrada como salida) de manera muy fácil e inmediata.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📱 Diseño Responsivo</h3>
+                    <p>Interfaz optimizada para computadoras y tablets, con un diseño elegante inspirado en hardware profesional sobre un fondo beige claro.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tecnologías Utilizadas -->
+    <section class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">🚀 Tecnologías Utilizadas</h2>
+            <p>Construido con herramientas modernas para un rendimiento óptimo y una experiencia de desarrollo robusta.</p>
+            <div class="tech-grid">
+                <div class="tech-item">HTML5 & CSS3</div>
+                <div class="tech-item">JavaScript (ES6+)</div>
+                <div class="tech-item">Web Audio API</div>
+                <div class="tech-item">Web MIDI API</div>
+                <div class="tech-item">Progressive Web App (PWA)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Donación (NUEVA) -->
+    <section class="donation">
+        <div class="container">
+            <div class="donation-card">
+                <h2>☕ Apoya este proyecto</h2>
+                <p>¿Te gusta Kharla Piano PWA? Tu donación, del monto que tú elijas, me ayuda a mantener vivo el desarrollo, cubrir costos de infraestructura y seguir creando herramientas musicales gratuitas y de código abierto para todos.</p>
+                <a href="https://paypal.me/Donacion472" class="btn-paypal" target="_blank" rel="noopener noreferrer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.554 9.488c.121.563.106 1.246-.045 2.03-.459 2.406-1.838 3.624-4.1 3.624h-.254c-.173 0-.349.063-.475.173a.875.875 0 0 0-.255.474l-.015.083-.39 2.478-.017.09c-.01.053-.026.104-.063.145a.26.26 0 0 1-.164.064H10.93a.436.436 0 0 1-.412-.286.432.432 0 0 1-.029-.16c0-.032.007-.064.016-.094l.818-5.18c.022-.14.098-.266.21-.35a.633.633 0 0 1 .39-.13h1.09c2.262 0 4.022-.918 4.52-3.53.208-1.09.1-2.002-.282-2.703-.054-.098-.117-.19-.187-.275.11.06.216.128.316.205.572.45 1.018 1.057 1.184 1.817Z" fill="white"/>
+                        <path d="M7.25 2.75h6.532c.78 0 1.48.163 2.08.488.6.325 1.08.78 1.44 1.365.36.585.58 1.26.66 2.025.08.765.04 1.62-.12 2.565-.48 2.505-1.74 3.99-3.78 4.455-.54.12-1.14.18-1.8.18h-1.08c-.24 0-.45.075-.63.225-.18.15-.29.345-.33.585l-.03.15-.81 5.145-.03.18c-.03.18-.12.33-.27.45-.15.12-.33.18-.54.18H4.25c-.3 0-.54-.12-.72-.36-.18-.24-.24-.51-.18-.81l1.8-11.4c.06-.39.24-.72.54-.99.3-.27.66-.405 1.08-.405h.48Z" fill="white" fill-opacity="0.7"/>
+                    </svg>
+                    Hacer una donación con PayPal
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Desarrollado con ❤️ por <a href="https://github.com/ciromellado" target="_blank">@ciromellado</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+                Licenciado bajo <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a> • 
+                <a href="https://github.com/ciromellado/Kharla-Piano-PWA--Ciro" target="_blank">Repositorio en GitHub</a>
+            </p>
+            
+            <!-- Enlace secundario a donación en el footer -->
+            <div class="footer-donation">
+                ¿Quieres apoyar el desarrollo futuro? <a href="https://paypal.me/Donacion472" target="_blank" rel="noopener noreferrer">Invítame a un café ☕</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
